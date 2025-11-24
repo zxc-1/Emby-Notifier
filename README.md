@@ -30,8 +30,8 @@
   - [3.1 环境要求](#31-环境要求)
   - [3.2 代码目录结构示例](#32-代码目录结构示例)
 - [4. docker-compose 部署](#4-docker-compose-部署)
-  - [4.1 使用 DockerHub 镜像的 docker-composeyml](#41-使用-dockerhub-镜像的-docker-composeyml)
-  - [4.2 从源码构建的 docker-composeyml](#42-从源码构建的-docker-composeyml)
+  - [4.1 使用 DockerHub 镜像的 docker-composeyaml](#41-使用-dockerhub-镜像的-docker-composeyml)
+  - [4.2 从源码构建的 docker-composeyaml](#42-从源码构建的-docker-composeyml)
 - [5. 配置项说明（环境变量）](#5-配置项说明环境变量)
   - [5.1 Telegram 设置](#51-telegram-设置)
   - [5.2 Emby 相关](#52-emby-相关)
@@ -90,7 +90,7 @@ cd Emby-Notifier
 docker build -t emby_notifier:local .
 ```
 
-然后在 `docker-compose.yml` 里使用 `build: .` 或 `image: emby_notifier:local` 即可。
+然后在 `docker-compose.yaml` 里使用 `build: .` 或 `image: emby_notifier:local` 即可。
 
 ---
 
@@ -114,7 +114,7 @@ docker build -t emby_notifier:local .
 ```text
 Emby-Notifier/
 ├── app.py
-├── docker-compose.yml        # 可选示例文件
+├── docker-compose.yaml        # 可选示例文件
 ├── Dockerfile
 ├── requirements.txt
 └── notifier/
@@ -133,24 +133,24 @@ Emby-Notifier/
 
 ## 4. docker-compose 部署
 
-### 4.1 使用 DockerHub 镜像的 docker-compose.yml
+### 4.1 使用 DockerHub 镜像的 docker-compose.yaml
 
 > **推荐方式**：不用本地 build，直接用 `dala666x/emby_notifier` 镜像。
 
 在你的服务器上创建目录，例如：
 
 ```bash
-mkdir -p /home/emby_notifier_v1.1.0
-cd /home/emby_notifier_v1.1.0
+mkdir -p /home/emby_notifier
+cd /home/emby_notifier
 ```
 
-新建 `docker-compose.yml`：
+新建 `docker-compose.yaml`：
 
 ```yaml
 services:
   emby_notifier:
     image: dala666x/emby_notifier:latest
-    container_name: emby_notifier_v1.1.0
+    container_name: emby_notifier
     restart: unless-stopped
 
     environment:
@@ -181,7 +181,7 @@ docker compose up -d
 
 ---
 
-### 4.2 从源码构建的 docker-compose.yml
+### 4.2 从源码构建的 docker-compose.yaml
 
 如果你想用源码构建镜像，可以使用类似配置：
 
@@ -189,7 +189,7 @@ docker compose up -d
 services:
   emby_notifier:
     build: .
-    container_name: emby_notifier_v1.1.0
+    container_name: emby_notifier
     restart: unless-stopped
 
     environment:
@@ -270,7 +270,7 @@ services:
 
 ## 6. 启动与验证
 
-在 `docker-compose.yml` 所在目录执行：
+在 `docker-compose.yaml` 所在目录执行：
 
 ```bash
 # 后台启动
@@ -280,7 +280,7 @@ docker compose up -d
 docker ps | grep emby_notifier
 
 # 查看日志
-docker logs --tail=50 emby_notifier_v1.1.0
+docker logs --tail=50 emby_notifier
 ```
 
 若一切正常，会看到类似输出：
@@ -326,7 +326,7 @@ http://服务器IP:8000/emby-webhook
 
 **Q：端口可以改成不是 8000 吗？**  
 A：可以，记得：
-- 修改 `docker-compose.yml` 中的 `ports` 映射  
+- 修改 `docker-compose.yaml` 中的 `ports` 映射  
 - 同步修改 Emby Webhook 里的 URL 端口号  
 
 **Q：没有 TMDB API Key 可以用吗？**  
