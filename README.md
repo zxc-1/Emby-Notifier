@@ -78,25 +78,7 @@ docker pull dala666x/emby_notifier:latest
 
 ---
 
-### 2.2 从源码构建镜像
-
-如果你想自己构建镜像：
-
-```bash
-git clone https://github.com/zxc-1/Emby_Notifier.git
-cd Emby-Notifier
-
-# 构建镜像
-docker build -t emby_notifier:local .
-```
-
-然后在 `docker-compose.yaml` 里使用 `build: .` 或 `image: emby_notifier:local` 即可。
-
----
-
-## 3. 部署前准备
-
-### 3.1 环境要求
+## 3. 部署前准备-环境要求
 
 - 一台可运行 **Docker** 的服务器（推荐 **Linux**）
 - 已经在运行的 **Emby** 服务  
@@ -104,32 +86,6 @@ docker build -t emby_notifier:local .
 - 一组 **Telegram 机器人 & 频道/群** 信息：
   - `TG_BOT_TOKEN`：Bot Token
   - `TG_CHAT_ID`：频道/群 ID（通常为负数，例如 `-100321896XXXX`）
-
----
-
-### 3.2 代码目录结构示例
-
-克隆本仓库后，目录结构大致为：
-
-```text
-Emby-Notifier/
-├── app.py
-├── docker-compose.yaml        # 可选示例文件
-├── Dockerfile
-├── requirements.txt
-└── notifier/
-    ├── __init__.py
-    ├── config.py
-    ├── utils.py
-    ├── mediainfo.py
-    ├── emby_meta.py
-    ├── tmdb_client.py
-    ├── telegram_client.py
-    ├── templates.py
-    └── services.py
-```
-
----
 
 ## 4. docker-compose 部署
 
@@ -178,39 +134,6 @@ services:
 ```bash
 docker compose up -d
 ```
-
----
-
-### 4.2 从源码构建的 docker-compose.yaml
-
-如果你想用源码构建镜像，可以使用类似配置：
-
-```yaml
-services:
-  emby_notifier:
-    build: .
-    container_name: emby_notifier
-    restart: unless-stopped
-
-    environment:
-      TG_BOT_TOKEN: "你的_TG_BOT_TOKEN"
-      TG_CHAT_ID: "-10032189xxxxx"
-      EMBY_BASE_URL: "http://IP:端口"
-      EMBY_API_KEY: "你的_emby_api_key"
-      TMDB_API_KEY: "你的_tmdb_api_key"
-      MI_TIMEOUT: "60"
-      MI_INTERVAL: "5"
-
-    volumes:
-      - /media:/media:ro
-
-    ports:
-      - "8000:8000"
-```
-
-> 这种方式需要你先把仓库代码放到该目录下。
-
----
 
 ## 5. 配置项说明（环境变量）
 
