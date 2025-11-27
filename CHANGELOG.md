@@ -1,19 +1,33 @@
 # Changelog
 
-
 ## v1.2.2
 
-### 变更
+- 成人判定：
+  - 移除基于路径的成人规则（删除 ADULT_ROOTS / ADULT_KEYWORDS / is_adult_path）。
+  - 成人与否全部收敛到统一智能函数 is_adult_content(meta, path=None)。
 
-- 移除基于路径配置的成人识别规则：
-  - 删除 `Settings.ADULT_ROOTS` / `Settings.ADULT_KEYWORDS` 等配置项。
-  - 删除工具函数 `is_adult_path`，成人判断全部收敛到统一的智能函数 `is_adult_content`。
-  - `is_adult_content` 仍然可以把实际文件路径当作一个弱信号来源（例如包含 `porn` / `hentai` / `jav`），但不再依赖可配置的路径规则。
+- 剧集逻辑：
+  - 删除剧集聚合推送（EpisodeBatch 及后台任务）。
+  - 所有电影/剧集/视频，一条入库一条通知，统一走即时推送。
 
-- 取消剧集聚合推送逻辑：
-  - 删除 `EpisodeBatch` 及其后台刷新任务，不再在内存中聚合剧集。
-  - `/emby-webhook` 中不再区分剧集是否进入聚合队列，所有条目统一按“单条即时推送”处理。
-  - 移除 `EPISODE_BATCH_WINDOW` / `EPISODE_BATCH_TICK` 配置，以及 docker-compose 中对应的环境变量。
+- 普通模板（电影+非成人剧集）：
+  - 统一为一套“信息卡”：
+    - 抬头改为：`🛰 Emby · 新资源已抵达 · 正在为您呈现`
+    - 剧集：`📅 播出：YYYY｜季集：SxxExx`
+    - 电影：`📅 上映：YYYY`
+    - 统一：`🕒 入库：YYYY-MM-DD HH:MM:SS`
+  - 类别/语言/类型顺序：空一行后 `📂 类别` → `🌍 语言` → `🎭 类型`
+  - 规格行只保留分辨率/HDR + 编码/容器 + 大小，去掉“约 XX 分钟”。
+  - 演员只展示前三位并加“等”，评分行移到演员下方。
+
+- 片头时间：
+  - 从 Emby mediainfo JSON 的 Chapters 中读取 IntroStart/IntroEnd。
+  - 计算 intro_duration_sec 后，在标题尾部追加：`⏩片头M:SS`（电影、剧集通用）。
+
+- AV 模板：
+  - 成人开头行改为：  
+    `🔞 注意车速：番 {code_or_name} 已就绪，系好安全带`
+  - 其他 AV 模板结构保持不变（片名行、下方信息照旧）。
 
 
 ## v1.2.1
@@ -65,11 +79,7 @@
 
 
 
-
-
-
-
-## v1.1.0
+## v1.2.0
 
 - 重构为多模块结构（`notifier/` 包），便于维护和扩展。
 - 支持电影 / 剧集 / 成人内容（番号）三种不同模板：
